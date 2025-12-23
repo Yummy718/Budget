@@ -1,33 +1,29 @@
 # Budgeting Helper Application
 
-## Project Overview
+## Overview
 
-The **Budgeting Helper Application** is a Python program designed to help users
-understand and manage their weekly finances. It calculates the total cost of
-items, applies tax, checks whether spending is within a set budget, tracks
-leftover money, and applies a weekly allowance on a specified day.
+The **Budgeting Helper Application** is a Python-based program designed to help users
+manage their weekly budget. It allows users to input a budget, add purchased items,
+calculate totals with tax, and determine whether they are within budget.
 
-The project is built using a **modular design**, separating core calculations,
-user input, output formatting, and the main program flow.
+The application uses a **graphical user interface (GUI)** built with **Tkinter** and
+follows a **modular design** to separate core calculations, input handling, output
+display, and program flow.
 
 ---
 
-## Project Goals and Objectives
+## Features
 
-### Goals
-- Improve money management awareness
-- Prevent overspending
-- Clearly show how money is spent over time
-
-### Objectives
-- Calculate total cost of items (price × quantity)
+- Add multiple items with price and quantity
+- Display items live as they are added (chronological order)
+- Calculate subtotal, tax, and total cost
 - Determine if spending is within budget
-- Display remaining money or deficit
-- Track purchases in chronological order
-- Apply a weekly allowance on a specified day
-- Carry leftover money forward to the next week
+- Display remaining money and carry-over amount
+- Show a final summary with a detailed item breakdown
+- GUI-based (no command-line input/output)
 
 ---
 
 ## Project Structure
+
 
