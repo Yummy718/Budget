@@ -1,7 +1,5 @@
-========================================
-Budgeting Helper Application
+# Budgeting Helper Application
 README.txt
-========================================
 
 PROJECT NAME
 ------------
