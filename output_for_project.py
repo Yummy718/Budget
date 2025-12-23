@@ -1,74 +1,39 @@
-import datetime
+from budget import (
+    calculate_item_totals,
+    calculate_total_with_tax,
+    calculate_remaining_budget,
+    calculate_carry_over
+)
 
-def run_budget_helper():
-    print("--- Budgeting Helper Application ---")
-    
-    # 1. User Inputs (Design Spec 5)
-    try:
-        weekly_budget = float(input("Enter your weekly allowance/budget: $"))
-        tax_rate = float(input("Enter your local tax rate (e.g., 0.07 for 7%): "))
-    except ValueError:
-        print("Invalid input. Please enter numbers only.")
-        return
+def display_results(weekly_budget, tax_rate, items, current_day):
+    """Handles all output and reporting."""
 
-    transactions = []
-    total_spent = 0.0
-    
-    while True:
-        print(f"\nCurrent Balance: ${weekly_budget - total_spent:.2f}")
-        action = input("\nAdd item (a) or View Summary (s) or Quit (q): ").lower()
-        
-        if action == 'a':
-            # 2. Tracking items and quantities
-            item_name = input("Item name: ")
-            try:
-                price = float(input("Price per item: $"))
-                quantity = int(input("Quantity: "))
-            except ValueError:
-                print("Invalid price or quantity.")
-                continue
+    items, subtotal = calculate_item_totals(items)
+    tax_amount, total_cost = calculate_total_with_tax(subtotal, tax_rate)
+    remaining_money, within_budget = calculate_remaining_budget(
+        weekly_budget, total_cost
+    )
+    carry_over = calculate_carry_over(remaining_money)
 
-            # 3. Calculate sum with tax (Functional Req)
-            subtotal = price * quantity
-            tax_amount = subtotal * tax_rate
-            item_total = subtotal + tax_amount
-            
-            # Check if within budget
-            if total_spent + item_total > weekly_budget:
-                print(f"!!! ALERT: This exceeds your budget by ${(total_spent + item_total) - weekly_budget:.2f}")
-                proceed = input("Do you still want to add it? (y/n): ")
-                if proceed.lower() != 'y':
-                    continue
+    print("\n=== Weekly Budget Summary ===")
+    print(f"Day of Week: {current_day}")
+    print(f"Budget: ${weekly_budget:.2f}")
+    print(f"Subtotal: ${subtotal:.2f}")
+    print(f"Tax: ${tax_amount:.2f}")
+    print(f"Total Cost: ${total_cost:.2f}")
 
-            # Store transaction with timestamp (Functional Req)
-            transactions.append({
-                "time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
-                "item": item_name,
-                "total": item_total
-            })
-            total_spent += item_total
-            print(f"Added {item_name}. Total for this item: ${item_total:.2f}")
+    print("\nItems Purchased (Chronological Order):")
+    for item in items:
+        print(
+            f"- {item['day']} | {item['name']} | "
+            f"${item['price']} x {item['quantity']} "
+            f"= ${item['total_price']:.2f}"
+        )
 
-        elif action == 's':
-            # 4. Show chronological order (Functional Req)
-            print("\n--- Weekly Transaction Log ---")
-            if not transactions:
-                print("No transactions yet.")
-            for t in transactions:
-                print(f"[{t['time']}] {t['item']}: ${t['total']:.2f}")
-            
-            # Summary stats
-            remaining = weekly_budget - total_spent
-            print("-" * 30)
-            print(f"Total Spent: ${total_spent:.2f}")
-            if remaining < 0:
-                print(f"DEFICIT: -${abs(remaining):.2f}")
-            else:
-                print(f"REMAINING BUDGET: ${remaining:.2f}")
-                
-        elif action == 'q':
-            print("Closing Budgeting Helper. Goodbye!")
-            break
+    if within_budget:
+        print(f"\nMoney Left: ${remaining_money:.2f}")
+    else:
+        print(f"\nOver Budget By: ${abs(remaining_money):.2f}")
 
-if __name__ == "__main__":
-    run_budget_helper()
+    print(f"Money Carried Over: ${carry_over:.2f}")
+    print("\n=== End of Report ===")
